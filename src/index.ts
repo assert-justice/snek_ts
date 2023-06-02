@@ -1,8 +1,7 @@
-const button = document.querySelector('#start-button');
+// these constructors will throw errors if the browser tries to use them
+const button = document.querySelector('#start-button') ?? new HTMLButtonElement();
 const canvas: HTMLCanvasElement = document.querySelector('#canvas') ?? new HTMLCanvasElement();
-if(!canvas) throw '';
-const context = canvas.getContext('2d');
-if(!context) throw '';
+const context = canvas.getContext('2d') ?? new CanvasRenderingContext2D();
 const displayWidth = canvas.width;
 const displayHeight = canvas.height;
 const gridWidth = 24;
@@ -10,7 +9,7 @@ const gridHeight = 24;
 const cellWidth = displayWidth / gridWidth;
 const cellHeight = displayHeight / gridHeight;
 const appleImage = new Image(cellWidth, cellHeight);
-appleImage.src = './apple.png';
+appleImage.src = './images/apple.png';
 let highScore = 0;
 
 const state: any = {};
@@ -22,11 +21,11 @@ function clear(){
     context.fillRect(0, 0, displayWidth, displayHeight);
 }
 
-function drawCell(x, y){
+function drawCell(x: number, y: number){
     context.fillRect(x * cellWidth + 2.5, y * cellHeight + 2.5, cellWidth - 5, cellHeight - 5);
 }
 
-function drawDiamond(x, y){
+function drawDiamond(x: number, y: number){
     const vertices = [[1, 0.5], [0.5, 0], [0, 0.5], [0.5, 1]];
     const coords = [];
     for (const [vx, vy] of vertices) {
@@ -40,19 +39,19 @@ function drawDiamond(x, y){
     context.fill();
 }
 
-function drawImage(image, x, y){
+function drawImage(image: HTMLImageElement, x: number, y: number){
     x *= cellWidth;
     y *= cellHeight;
-    context.drawImage(image, x, y, cellWidth, cellHeight);
+    context.drawImage(image, cellWidth, cellHeight);
 }
 
 // coord helpers
 
-function coordToKey(x, y){
+function coordToKey(x: number, y: number){
     return `${x},${y}`;
 }
 
-function keyToCoord(key){
+function keyToCoord(key: string){
     return key.split(',').map(Number);
 }
 
@@ -112,17 +111,7 @@ function drawDisplay(){
 }
 
 function loop(){
-    // check for lose conditions
     const key = coordToKey(state.x, state.y);
-    let running = false;
-    if(state.x < 0 || state.x >= gridWidth){}
-    else if(state.y < 0 || state.y >= gridHeight){}
-    else if(state.tail.includes(key)){}
-    else{running = true;}
-    if(!running && button) {
-        button.innerHTML = "Game Over! Try again?";
-        return;
-    };
     // simulate
     state.tail.unshift(key);
     state.tail = state.tail.slice(0, state.length - 1);
@@ -135,20 +124,28 @@ function loop(){
         scoreUpdate();
         placeFruit();
     }
+    // check for lose conditions
+    button.innerHTML = 'Game Over! Try again?';
+    if(state.x < 0 || state.x >= gridWidth) return;
+    else if(state.y < 0 || state.y >= gridHeight)return;
+    else if(state.tail.includes(key))return;
+    button.innerHTML = 'Reset';
     // draw
     draw();
     // setup next loop
     setTimeout(loop, state.delay);
 }
 
-function keyDown(event){
-    const {keyCode} = event;
+function keyDown(event: KeyboardEvent){
+    const {key} = event;
+    console.log(key);
+    
     let dx = 0;
     let dy = 0;
-    if(keyCode === 68){dx = 1;}
-    else if(keyCode === 65){dx = -1;}
-    else if(keyCode === 87){dy = -1;}
-    else if(keyCode === 83){dy = 1;}
+    // if(keyCode === 68){dx = 1;}
+    // else if(keyCode === 65){dx = -1;}
+    // else if(keyCode === 87){dy = -1;}
+    // else if(keyCode === 83){dy = 1;}
     if(dx === state.dx || dy === state.dy){
         // either pressed in same direction or reverse
         // either way ignore
@@ -161,7 +158,6 @@ function keyDown(event){
 
 function main(){
     button.addEventListener('click', e => {
-        running = true;
         button.innerHTML = "Reset";
         resetState();
         loop();
