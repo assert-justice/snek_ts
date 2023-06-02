@@ -27,17 +27,24 @@ Make `src` and `dist` directories.
 `.dist/index.html`
 ```html
 <!DOCTYPE html>
- <html lang="en-US">
-   <head>
-     <meta charset="utf-8" />
-     <title>Getting Started</title>
-     <link rel="stylesheet" href="style.css">
-   </head>
-   <body>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Snek</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Snek</h1>
+    <p id="score">Score: 0 High Score: 0</p>
+    <canvas id="canvas" width="600" height="600"></canvas>
+    <div id="controlls">
+        <button id="start-button">Play!</button>
+    </div>
+    <p>It's a snake game what do you want from me? WASD to move, collect as many fruit as you can before you die.</p>
+    <script src="./bundle.js"></script>
+  </body>
+</html>
 
-    <script src="bundle.js"></script>
-   </body>
- </html>
 ```
 
 `.dist/style.css`

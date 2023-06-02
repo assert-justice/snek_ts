@@ -1,7 +1,7 @@
 // these constructors will throw errors if the browser tries to use them
-const button = document.querySelector('#start-button') ?? new HTMLButtonElement();
-const canvas: HTMLCanvasElement = document.querySelector('#canvas') ?? new HTMLCanvasElement();
-const context = canvas.getContext('2d') ?? new CanvasRenderingContext2D();
+const button = nullCheck(document.querySelector('#start-button'), '');
+const canvas: HTMLCanvasElement = nullCheck(document.querySelector('#canvas'), '');
+const context = nullCheck(canvas.getContext('2d'), '');
 const displayWidth = canvas.width;
 const displayHeight = canvas.height;
 const gridWidth = 24;
@@ -11,6 +11,11 @@ const cellHeight = displayHeight / gridHeight;
 const appleImage = new Image(cellWidth, cellHeight);
 appleImage.src = './images/apple.png';
 let highScore = 0;
+
+function nullCheck<T>(arg: T | null, err: string): T{
+    if(arg === null) throw err;
+    return arg;
+}
 
 const state: any = {};
 
