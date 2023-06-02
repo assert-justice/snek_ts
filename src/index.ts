@@ -47,7 +47,7 @@ function drawDiamond(x: number, y: number){
 function drawImage(image: HTMLImageElement, x: number, y: number){
     x *= cellWidth;
     y *= cellHeight;
-    context.drawImage(image, cellWidth, cellHeight);
+    context.drawImage(image, x, y, cellWidth, cellHeight);
 }
 
 // coord helpers
@@ -116,8 +116,8 @@ function drawDisplay(){
 }
 
 function loop(){
-    const key = coordToKey(state.x, state.y);
     // simulate
+    const key = coordToKey(state.x, state.y);
     state.tail.unshift(key);
     state.tail = state.tail.slice(0, state.length - 1);
     state.x += state.dx;
@@ -133,7 +133,7 @@ function loop(){
     button.innerHTML = 'Game Over! Try again?';
     if(state.x < 0 || state.x >= gridWidth) return;
     else if(state.y < 0 || state.y >= gridHeight)return;
-    else if(state.tail.includes(key))return;
+    else if(state.tail.includes(coordToKey(state.x, state.y)))return;
     button.innerHTML = 'Reset';
     // draw
     draw();
@@ -143,14 +143,13 @@ function loop(){
 
 function keyDown(event: KeyboardEvent){
     const {key} = event;
-    console.log(key);
     
     let dx = 0;
     let dy = 0;
-    // if(keyCode === 68){dx = 1;}
-    // else if(keyCode === 65){dx = -1;}
-    // else if(keyCode === 87){dy = -1;}
-    // else if(keyCode === 83){dy = 1;}
+    if(key === 'd'){dx = 1;}
+    else if(key === 'a'){dx = -1;}
+    else if(key === 'w'){dy = -1;}
+    else if(key === 's'){dy = 1;}
     if(dx === state.dx || dy === state.dy){
         // either pressed in same direction or reverse
         // either way ignore
